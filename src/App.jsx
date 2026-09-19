@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar as CalendarIcon, MessageSquare, Smartphone, Archive, BarChart3, PlusCircle, Building2, Mic, Heart } from 'lucide-react';
+import { Calendar as CalendarIcon, MessageSquare, Smartphone, Archive, BarChart3, PlusCircle, Building2, Mic, Heart, Terminal, Globe } from 'lucide-react';
 import CalendarView from './components/CalendarView';
 import EventModal from './components/EventModal';
 import LiveQABoard from './components/LiveQABoard';
@@ -10,11 +10,13 @@ import ImpactReportModal from './components/ImpactReportModal';
 import NewEventModal from './components/NewEventModal';
 import VenueDirectory from './components/VenueDirectory';
 import SpeakerPortal from './components/SpeakerPortal';
+import WhatsAppCliDesk from './components/WhatsAppCliDesk';
+import LumaAggregatorView from './components/LumaAggregatorView';
 
 import { INITIAL_EVENTS, INITIAL_VENUES, INITIAL_SPEAKER_CALLS, INITIAL_SPEAKER_APPLICATIONS, INITIAL_QA, INITIAL_RESOURCE_VAULT } from './data/mockEvents';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('calendar'); // 'calendar' | 'venues' | 'speakers' | 'qa' | 'sms' | 'resources'
+  const [activeTab, setActiveTab] = useState('calendar'); // 'calendar' | 'wacli' | 'luma' | 'venues' | 'speakers' | 'qa' | 'sms' | 'resources'
   const [events, setEvents] = useState(INITIAL_EVENTS);
   const [venues, setVenues] = useState(INITIAL_VENUES);
   const [speakerCalls, setSpeakerCalls] = useState(INITIAL_SPEAKER_CALLS);
@@ -27,7 +29,7 @@ export default function App() {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [isNewEventModalOpen, setIsNewEventModalOpen] = useState(false);
   const [isImpactReportOpen, setIsImpactReportOpen] = useState(false);
-  const [qrModalData, setQrModalData] = useState(null); // { event, attendeeName }
+  const [qrModalData, setQrModalData] = useState(null);
 
   // Handlers
   const handleRsvpSubmit = (eventId, rsvpDetails) => {
@@ -123,6 +125,8 @@ export default function App() {
           <nav className="flex items-center gap-1 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 scrollbar-none justify-start md:justify-center">
             {[
               { id: 'calendar', label: 'Web Calendar', icon: CalendarIcon },
+              { id: 'wacli', label: 'WA CLI Bot', icon: Terminal },
+              { id: 'luma', label: 'Luma Aggregator', icon: Globe },
               { id: 'venues', label: 'Venue Directory', icon: Building2 },
               { id: 'speakers', label: 'Call for Speakers', icon: Mic },
               { id: 'qa', label: 'Live Q&A Stream', icon: MessageSquare },
@@ -180,6 +184,20 @@ export default function App() {
             setSelectedChapter={setSelectedChapter}
             onSelectEvent={(evt) => setSelectedEvent(evt)}
             onOpenNewEventModal={() => setIsNewEventModalOpen(true)}
+          />
+        )}
+
+        {activeTab === 'wacli' && (
+          <WhatsAppCliDesk
+            events={events}
+            onAddEvent={handleCreateEvent}
+          />
+        )}
+
+        {activeTab === 'luma' && (
+          <LumaAggregatorView
+            events={events}
+            onAddEvent={handleCreateEvent}
           />
         )}
 
@@ -263,7 +281,7 @@ export default function App() {
           </span>
           <span>•</span>
           <span className="flex items-center gap-1">
-            <Smartphone className="w-3.5 h-3.5 text-emerald-400" /> Powered by Twilio SMS API
+            <Smartphone className="w-3.5 h-3.5 text-emerald-400" /> Meta WhatsApp Cloud API & WA CLI Engine
           </span>
         </div>
         <p>© 2026 Build2Learn. Zero-Friction Community Event Scheduler.</p>
